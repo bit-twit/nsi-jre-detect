@@ -131,7 +131,7 @@ Section /o "Installation of JRE Test" SecJRETest
  
   SetOutPath $INSTDIR
 ;  File /r "*"
-    File "polo-jar-with-dependencies.jar"
+    File "readme.txt"
  
   !insertmacro MUI_INSTALLOPTIONS_READ $0 "jre.ini" "UserDefinedSection" "JREPath"
   ;Store install folder
