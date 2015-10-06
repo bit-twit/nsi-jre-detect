@@ -23,7 +23,7 @@
 ;--------------------------------
 ;Pages
  
-  Page custom CheckInstalledJRE
+  ;Page custom CheckInstalledJRE
   !insertmacro MUI_PAGE_INSTFILES
   !define MUI_PAGE_CUSTOMFUNCTION_PRE myPreInstfiles
   !define MUI_PAGE_CUSTOMFUNCTION_LEAVE RestoreSections
@@ -62,6 +62,12 @@
  
 Section -installjre jre
   DetailPrint "Starting the JRE installation"
+  DetailPrint "Checking that JRE already exists"
+  Call DetectJRE
+  Pop $0
+  StrCmp $0 "OK" JavaExeVerif 0
+  Push "Java Runtime Environment ${JRE_VERSION} not found. Trying automatically install..."
+
   !ifdef WEB_INSTALL
     DetailPrint "Downloading the JRE setup"
     NSISdl::download /TIMEOUT=30000 ${JRE_URL} "$TEMP\jre_setup.exe"
@@ -105,8 +111,7 @@ JREPathStorage:
  
 ExitInstallJRE:
   Pop $2
-  MessageBox MB_OK "The setup is about to be interrupted for the following reason : $2"
-  Quit
+  MessageBox MB_OK "The JRE ${JRE_VERSION} is required but could not be installed. Error: $2"
 
 End:
 SectionEnd

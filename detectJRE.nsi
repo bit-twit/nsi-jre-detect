@@ -1,8 +1,3 @@
-# Included files
-!include MultiUser.nsh
-!include Sections.nsh
-!include MUI2.nsh
-
 !define JRE_VERSION "1.8"
 
 !define TEMP $R0
@@ -15,9 +10,6 @@
 
 ;--------------------------------
 ;Language Strings
- 
-  ;Description
-  LangString DESC_SecJRETest ${LANG_ENGLISH} "Application files copy"
  
   ;Header
   LangString TEXT_JRE_TITLE ${LANG_ENGLISH} "Java Runtime Environment"
@@ -69,7 +61,8 @@ FunctionEnd
  
 Function DetectJRE
   ReadRegStr ${TEMP2} HKLM "SOFTWARE\JavaSoft\Java Runtime Environment" "CurrentVersion"
-  MessageBox MB_OK "Detect 32 : [ ${TEMP2} ]"
+  ;MessageBox MB_OK "Detect 32 : [ ${TEMP2} ]"
+  DetailPrint "Detect 32 : [ ${TEMP2} ]"
   StrCmp ${TEMP2} "" DetectTryJDK32
   ReadRegStr ${TEMP3} HKLM "SOFTWARE\JavaSoft\Java Runtime Environment\${TEMP2}" "JavaHome"
   StrCmp ${TEMP3} "" DetectTryJDK32
@@ -84,7 +77,8 @@ DetectTryJDK32:
 
 DetectJRE64:
   ReadRegStr ${TEMP2} HKLM "SOFTWARE\Wow6432Node\JavaSoft\Java Runtime Environment" "CurrentVersion"
-  MessageBox MB_OK "Detect JRE"
+  ;MessageBox MB_OK "Detect JRE"
+  DetailPrint "Detect JRE"
   StrCmp ${TEMP2} "" DetectTryJDK64
   ReadRegStr ${TEMP3} HKLM "SOFTWARE\Wow6432Node\JavaSoft\Java Runtime Environment\${TEMP2}" "JavaHome"
   StrCmp ${TEMP3} "" DetectTryJDK64
@@ -97,9 +91,11 @@ DetectTryJDK64:
   StrCmp ${TEMP3} "" NoFound
  
 GetJRE:
-  MessageBox MB_OK "Found JRE path : ${TEMP3}"
+  ;MessageBox MB_OK "Found JRE path : ${TEMP3}"
+  DetailPrint "Found JRE path : ${TEMP3}"
   IfFileExists "${TEMP3}\bin\java.exe" 0 NoFound
-  MessageBox MB_OK "${VAL1}"
+  ;MessageBox MB_OK "${VAL1}"
+  DetailPrint "${VAL1}"
   StrCpy ${VAL1} ${TEMP2} 1
   StrCpy ${VAL2} ${JRE_VERSION} 1
   IntCmp ${VAL1} ${VAL2} 0 FoundOld FoundNew
