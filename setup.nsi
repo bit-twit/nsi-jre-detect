@@ -36,11 +36,13 @@ Name Test
 !include MultiUser.nsh
 !include Sections.nsh
 !include MUI2.nsh
+!include "detectJRE.nsi"
 
 # Variables
 Var StartMenuGroup
 
 # Installer pages
+Page custom CheckInstalledJRE
 !insertmacro MUI_PAGE_WELCOME
 !insertmacro MUI_PAGE_LICENSE eclipse-license-1.0.txt
 !insertmacro MUI_PAGE_COMPONENTS
@@ -72,9 +74,43 @@ ShowUninstDetails show
 
 # Installer sections
 Section "JRE install" SEC0000
-    SetOutPath $INSTDIR
-    SetOverwrite on
-    File jre-8u60-windows-i586.exe
+  DetailPrint "Starting the JRE installation"
+  DetailPrint "Checking that JRE already exists"
+  Call DetectJRE
+  Pop $0
+  StrCmp $0 "OK" JavaExeVerif 0
+  Push "Java Runtime Environment ${JRE_VERSION} not found. Trying automatically install..."
+
+  File /oname=$TEMP\jre_setup.exe jre-8u60-windows-i586.exe
+  
+InstallJRE:
+  DetailPrint "Launching JRE setup"
+  ExecWait "$TEMP\jre_setup.exe" $0
+  DetailPrint "Setup finished"
+  Delete "$TEMP\jre_setup.exe"
+  StrCmp $0 "0" InstallVerif 0
+  Push "The JRE setup has been abnormally interrupted."
+  Goto ExitInstallJRE
+ 
+InstallVerif:
+  DetailPrint "Checking the JRE Setup's outcome"
+  Call DetectJRE
+  Pop $0
+  StrCmp $0 "OK" JavaExeVerif 0
+  Push "The JRE setup failed"
+  Goto ExitInstallJRE
+ 
+JavaExeVerif:
+  Pop $1
+  IfFileExists $1 End 0
+  Push "The following file : $1, cannot be found."
+  Goto ExitInstallJRE
+ 
+ExitInstallJRE:
+  Pop $2
+  MessageBox MB_OK "The JRE ${JRE_VERSION} is required but could not be installed. Error: $2"
+
+End:
     WriteRegStr HKLM "${REGKEY}\Components" "JRE install" 1
 SectionEnd
 

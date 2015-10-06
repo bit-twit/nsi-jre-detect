@@ -26,19 +26,19 @@ Function CheckInstalledJRE
   StrCmp ${TEMP2} "None" NoFound FoundOld
  
 FoundOld:
-  !insertmacro MUI_INSTALLOPTIONS_WRITE "jre.ini" "Field 1" "Text" "JRE Test requires a more recent version of the Java Runtime Environment \
+ ; !insertmacro MUI_INSTALLOPTIONS_WRITE "jre.ini" "Field 1" "Text" "JRE Test requires a more recent version of the Java Runtime Environment \
 than the one found on your computer. \
 The installation of JRE \
 ${JRE_VERSION} will start."
   !insertmacro MUI_HEADER_TEXT "$(TEXT_JRE_TITLE)" "$(TEXT_JRE_SUBTITLE)"
-  !insertmacro MUI_INSTALLOPTIONS_DISPLAY_RETURN "jre.ini"
+  ;!insertmacro MUI_INSTALLOPTIONS_DISPLAY_RETURN "jre.ini"
   Goto DownloadJRE
  
 NoFound:
-  !insertmacro MUI_INSTALLOPTIONS_WRITE "jre.ini" "Field 1" "Text" "No Java Runtime Environment could be found on your computer \
+  ;!insertmacro MUI_INSTALLOPTIONS_WRITE "jre.ini" "Field 1" "Text" "No Java Runtime Environment could be found on your computer \
 The installation of JRE v${JRE_VERSION} will start."
   !insertmacro MUI_HEADER_TEXT "$(TEXT_JRE_TITLE)" "$(TEXT_JRE_SUBTITLE)"
-  !insertmacro MUI_INSTALLOPTIONS_DISPLAY "jre.ini"
+  ;!insertmacro MUI_INSTALLOPTIONS_DISPLAY "jre.ini"
   Goto DownloadJRE
  
 DownloadJRE:
@@ -48,7 +48,7 @@ DownloadJRE:
 NoDownloadJRE:
   Pop ${TEMP2}
   StrCpy ${DOWNLOAD_JRE_FLAG} "NoDownload"
-  !insertmacro MUI_INSTALLOPTIONS_WRITE "jre.ini" \
+  ;!insertmacro MUI_INSTALLOPTIONS_WRITE "jre.ini" \
 "UserDefinedSection" "JREPath" \
 ${TEMP2}
   Return
